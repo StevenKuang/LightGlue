@@ -21,7 +21,7 @@ else:
 torch.backends.cudnn.deterministic = True
 
 
-@torch.cuda.amp.custom_fwd(cast_inputs=torch.float32)
+@torch.amp.custom_fwd(cast_inputs=torch.float32, device_type="cuda")
 def normalize_keypoints(
     kpts: torch.Tensor, size: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
@@ -330,6 +330,7 @@ class LightGlue(nn.Module):
     # Point pruning involves an overhead (gather).
     # Therefore, we only activate it if there are enough keypoints.
     pruning_keypoint_thresholds = {
+
         "cpu": -1,
         "mps": -1,
         "cuda": 1024,
